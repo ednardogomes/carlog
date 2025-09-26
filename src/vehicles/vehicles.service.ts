@@ -29,6 +29,7 @@ export class VehicleService {
       newVehicleDb.id = uuid();
       newVehicleDb.make = createVehicleDto.make;
       newVehicleDb.model = createVehicleDto.model;
+      newVehicleDb.color = createVehicleDto.color;
       newVehicleDb.model_year = createVehicleDto.model_year;
       await this.vehicleRepository.save(newVehicleDb);
       // await this.VehicleQueue.add('process-Vehicle', newVehicleDb);
