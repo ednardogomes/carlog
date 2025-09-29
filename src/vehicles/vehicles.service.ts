@@ -29,8 +29,10 @@ export class VehicleService {
       newVehicleDb.id = uuid();
       newVehicleDb.make = createVehicleDto.make;
       newVehicleDb.model = createVehicleDto.model;
+      newVehicleDb.license_plate = createVehicleDto.license_plate;
       newVehicleDb.color = createVehicleDto.color;
       newVehicleDb.model_year = createVehicleDto.model_year;
+      console.log(newVehicleDb.license_plate);
       await this.vehicleRepository.save(newVehicleDb);
       // await this.VehicleQueue.add('process-Vehicle', newVehicleDb);
       return 'Veículo cadastrado com sucesso';
@@ -52,7 +54,7 @@ export class VehicleService {
 
     try {
       if (!isValidUUID(id)) {
-        throw new BadRequestException('Insira um ID válido');
+        throw new BadRequestException('ID tem que ser um UUID');
       }
 
       if (!foundVehicle) {
@@ -75,7 +77,7 @@ export class VehicleService {
 
     try {
       if (!isValidUUID(id)) {
-        throw new BadRequestException('Insira um ID válido');
+        throw new BadRequestException('ID tem que ser um UUID');
       }
 
       if (!foundVehicle) {
@@ -97,7 +99,7 @@ export class VehicleService {
 
     try {
       if (!isValidUUID(id)) {
-        throw new BadRequestException('Insira um ID válido');
+        throw new BadRequestException('ID tem que ser um UUID');
       } else if (!foundVehicle) {
         throw new NotFoundException('Veículo não encontrado.!');
       }
