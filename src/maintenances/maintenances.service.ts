@@ -33,6 +33,18 @@ export class MaintenancesService {
         return foundMaintenance;
     }
 
+    async getMaintenanceByVehicleId(vehicleId: string): Promise<Maintenance[]> {
+        const vehicle_id = vehicleId
+        if (!IsValidUUID(vehicleId)) {
+            throw new BadRequestException('ID tem que ser um UUID');
+        }
+        const foundMaintenance = await this.maintenancesRepository.find({ where: { vehicle_id } });
+        if (!foundMaintenance) {
+            throw new NotFoundException('Manutenção não encontrada');
+        }
+        return foundMaintenance;
+    }
+
     async createMaintenance(vehicle_id: string, createMaintenance: CreateMaintenanceDTO): Promise<string> {
         try {
             if (!IsValidUUID(vehicle_id)) {

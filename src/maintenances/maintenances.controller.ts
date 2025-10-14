@@ -18,6 +18,11 @@ export class MaintenancesController {
     return await this.MaintenancesService.getMaintenanceById(id);
   }
 
+  @Get('/per-vehicle/:vehicle_id')
+  async getMaintenanceByVehicleId(@Param('vehicle_id') vehicle_id: string): Promise<Maintenance[]> {
+    return await this.MaintenancesService.getMaintenanceByVehicleId(vehicle_id);
+  }
+
   @Post(':vehicle_id')
   async createMaintenance(
     @Param('vehicle_id') vehicle_id: string,

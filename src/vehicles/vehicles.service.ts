@@ -44,7 +44,9 @@ export class VehicleService {
   }
 
   async getVehicles(): Promise<Vehicle[]> {
-    return await this.vehicleRepository.find();
+    return await this.vehicleRepository.find({
+      relations: ['maintenances']
+    });
   }
 
   async getVehicleById(id: string): Promise<Vehicle> {
