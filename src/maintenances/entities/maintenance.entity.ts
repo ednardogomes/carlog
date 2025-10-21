@@ -25,7 +25,7 @@ export class Maintenance {
 
   @Column('numeric', { precision: 10, scale: 2 })
   @IsNumber()
-  cost: string;
+  cost: number;
 
   @Column()
   @IsString()
