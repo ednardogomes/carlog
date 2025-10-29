@@ -24,6 +24,16 @@ export class VehicleService {
   ) { }
 
   async createVehicle(createVehicleDto: CreateVehicleDto): Promise<string> {
+    const existingVehicle = await this.vehicleRepository.findOne({
+      where: { license_plate: createVehicleDto.license_plate },
+    });
+
+    if (existingVehicle) {
+      throw new BadRequestException(
+        'Já existe um veículo cadastrado com essa placa.',
+      );
+    }
+
     try {
       const newVehicleDb = new Vehicle();
       newVehicleDb.id = uuid();
