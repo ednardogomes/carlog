@@ -87,14 +87,27 @@ export class VehicleService {
       where: { id },
     });
 
-    try {
-      if (!isValidUUID(id)) {
-        throw new BadRequestException('ID tem que ser um UUID');
-      }
+    if (updateVehiclekDto.license_plate && updateVehiclekDto.license_plate !== foundVehicle.license_plate) {
+      const existingVehicleWithNewPlate = await this.vehicleRepository.findOne({
+        where: { license_plate: updateVehiclekDto.license_plate },
+      });
 
-      if (!foundVehicle) {
-        throw new NotFoundException('Veículo não encontrado.!');
+      if (existingVehicleWithNewPlate && existingVehicleWithNewPlate.id !== id) {
+        throw new BadRequestException(
+          'Já existe um veículo cadastrado com essa placa.',
+        );
       }
+    }
+
+    if (!isValidUUID(id)) {
+      throw new BadRequestException('ID tem que ser um UUID');
+    }
+
+    if (!foundVehicle) {
+      throw new NotFoundException('Veículo não encontrado.!');
+    }
+
+    try {
 
       await this.vehicleRepository.update(id, updateVehiclekDto);
       Object.assign(foundVehicle, updateVehiclekDto);
@@ -109,13 +122,15 @@ export class VehicleService {
       where: { id },
     });
 
-    try {
-      if (!isValidUUID(id)) {
-        throw new BadRequestException('ID tem que ser um UUID');
-      } else if (!foundVehicle) {
-        throw new NotFoundException('Veículo não encontrado.!');
-      }
+    if (!isValidUUID(id)) {
+      throw new BadRequestException('ID tem que ser um UUID');
+    }
 
+    if (!foundVehicle) {
+      throw new NotFoundException('Veículo não encontrado.!');
+    }
+
+    try {
       const result = await this.vehicleRepository.delete(id);
       if (result.affected === 0)
         throw new NotFoundException('Vehicle not found');
