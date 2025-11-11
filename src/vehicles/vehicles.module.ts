@@ -16,5 +16,6 @@ import { Vehicle } from './entities/vehicle.entity';
   ],
   controllers: [VehiclesController],
   providers: [VehicleService /* VehicleProcessor*/],
+  exports: [VehicleService],
 })
 export class VehiclesModule { }
