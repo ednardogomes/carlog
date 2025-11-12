@@ -17,6 +17,6 @@ export class VehicleTable1758722588318 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query('DROP TABLE IF EXISTS vehicle;');
+        await queryRunner.query('DROP TABLE IF EXISTS vehicles');
     }
 }

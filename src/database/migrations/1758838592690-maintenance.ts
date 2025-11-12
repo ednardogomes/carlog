@@ -18,7 +18,7 @@ export class Maintenance1758838592690 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            DROP TABLE maintenances;
+            DROP TABLE IF EXISTS maintenances
         `);
     }
 }

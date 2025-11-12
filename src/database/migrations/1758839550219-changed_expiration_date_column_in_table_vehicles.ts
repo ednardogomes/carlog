@@ -12,7 +12,7 @@ export class ChangedExpirationDateColumnInTableVehicles1758839550219
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             ALTER TABLE vehicles
-            RENAME COLUMN created_at TO expiration_date;
+            RENAME COLUMN created_at TO expiration_date
         `);
     }
 }
