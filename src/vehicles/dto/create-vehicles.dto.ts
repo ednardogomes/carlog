@@ -17,6 +17,12 @@ export class CreateVehicleDto {
   @MaxLength(50, { message: 'O modelo não pode ultrapassar 50 caractéres' })
   model: string;
 
+  @IsString({ message: 'A placa deve ser uma string ' })
+  @IsOptional()
+  @MinLength(7, { message: 'A placa deve ter 7 caractéres' })
+  @MaxLength(7, { message: 'A placa deve ter 7 caractéres' })
+  license_plate: string;
+
   @IsString({ message: 'A cor deve ser uma string' })
   @IsOptional()
   @MaxLength(20, { message: 'A cor não pode ultrapassar 20 caractéres' })

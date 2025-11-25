@@ -8,6 +8,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RedisModule } from './redis/redis.module';
+import { MaintenancesModule } from './maintenances/maintenances.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RedisModule } from './redis/redis.module';
     AuthModule,
     UsersModule,
     RedisModule,
+    MaintenancesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
