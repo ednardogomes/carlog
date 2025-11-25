@@ -22,7 +22,9 @@
     "migration:create": "npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
     "migration:generate": "npm run typeorm -- migration:generate -n $npm_config_name",
     "migration:run": "npm run typeorm -- migration:run -d ./src/database/typeOrm.migration-config.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -d ./src/database/typeOrm.migration-config.ts"
+    "migration:revert": "npm run typeorm -- migration:revert -d ./src/database/typeOrm.migration-config.ts",
+    "seed:run": "ts-node src/database/seeds/$npm_config_name.ts",
+    "seed:all": "for f in src/database/seeds/*.ts; do NAME=$(basename $f .ts); npm run seed:run --name=$NAME; done"
   },
   "dependencies": {
     "@nestjs/bull": "^10.2.2",

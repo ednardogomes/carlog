@@ -4,8 +4,10 @@ import {
   IsString,
   IsUUID,
   MaxLength,
+  MinLength,
 } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Maintenance } from '../../maintenances/entities/maintenance.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('vehicles')
 export class Vehicle {
@@ -25,6 +27,13 @@ export class Vehicle {
   @MaxLength(500)
   model: string;
 
+  @IsString()
+  @Column({ unique: true })
+  @MinLength(7)
+  @MaxLength(7)
+  @IsOptional()
+  license_plate: string;
+
   @Column()
   @IsOptional()
   @IsString()
@@ -35,4 +44,7 @@ export class Vehicle {
   @IsString()
   @IsOptional()
   model_year: string;
+
+  @OneToMany(() => Maintenance, maintenance => maintenance.vehicle)
+  maintenances: Maintenance[];
 }
