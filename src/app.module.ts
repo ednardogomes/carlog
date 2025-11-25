@@ -5,6 +5,9 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { RedisModule } from './redis/redis.module';
 import { MaintenancesModule } from './maintenances/maintenances.module';
 
 @Module({
@@ -22,6 +25,9 @@ import { MaintenancesModule } from './maintenances/maintenances.module';
     }),
     DatabaseModule,
     VehiclesModule,
+    AuthModule,
+    UsersModule,
+    RedisModule,
     MaintenancesModule,
   ],
   controllers: [AppController],

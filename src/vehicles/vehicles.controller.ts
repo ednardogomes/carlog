@@ -6,12 +6,15 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { VehicleService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicles.dto';
 import { UpdateVehicleDto } from './dto/update-vehicles.dto';
 import { Vehicle } from './entities/vehicle.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('vehicle')
 export class VehiclesController {
   constructor(private readonly VehicleService: VehicleService) { }
