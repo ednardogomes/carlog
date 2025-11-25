@@ -3,6 +3,9 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import { Redis } from 'ioredis';
+
 
 @Injectable()
 export class AuthService {
@@ -10,6 +13,7 @@ export class AuthService {
         private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
+        @InjectRedis() private readonly redisClient: Redis
     ) { }
 
 
@@ -29,11 +33,6 @@ export class AuthService {
         return { access_token: `Bearer ${access_token}`, refresh_token }
     }
 
-    private async updateRefreshToken(userId: string) {
-        //fazer o refreshToken com o redis, por que o GPT está mostrando como fazer  se eu tivesse uma coluna em Users para ele no postgres.
-    }
-
-
     async validateUser(email: string, pass: string): Promise<any> {
         const user = await this.usersService.findByEmail(email);
         if (!user) {
@@ -51,33 +50,49 @@ export class AuthService {
 
     async login(user: any) {
         const tokens = await this.getTokens(user.id)
-
-        //salvar a hash refreshToken no banco(cache)
+        await this.redisClient.set(
+            user.id,
+            tokens.refresh_token,
+            'EX',
+            30
+        )
 
         return { tokens, user }
     }
 
     async refresh(refreshToken: string) {
         try {
-            const payload = await this.jwtService.verifyAsync<{ sub: string }>(refreshToken)
+            const payload = await this.jwtService.verifyAsync<{ sub: string, type: string }>(refreshToken)
+
+            if (payload.type !== 'refresh') throw new UnauthorizedException('Autenticação inválida');
 
             const user = await this.usersService.getUserById(payload.sub)
-
             if (!user) throw new UnauthorizedException('Usuário não encontrado');
 
-            const isRefreshTokenMatching = 'usar o bcrypt para comprar o token passada com a hash do token que está no banco'
+            const existingToken = await this.redisClient.get(payload.sub)
+            if (!existingToken) throw new UnauthorizedException('Token não encontrado, faça login novamente')
 
-            if (!isRefreshTokenMatching) {
-                throw new UnauthorizedException('Refresh Token Inválido')
-            }
+            console.log(`Token enviado pelo front: ${refreshToken}`);
+            console.log(`Token no Redis: ${existingToken}`);
 
-            const tokens = await this.getTokens(user.id);
+            if (refreshToken !== existingToken) throw new UnauthorizedException('Refresh Token já foi utilizado');
 
-            //usar o updateRefreshToken para atualizar o refreshToken no banco
+            const tokens = await this.getTokens(payload.sub);
+
+            await this.redisClient.set(
+                payload.sub,
+                tokens.refresh_token,
+                'EX',
+                15
+            )
 
             return tokens;
         } catch (error) {
-            throw new UnauthorizedException('Refresh Token expirado ou inválido')
+            if (error instanceof UnauthorizedException) {
+                throw error;
+            }
+            console.error(error)
+            throw new UnauthorizedException('Refresh Token expirado ou inválido, faça login novamente');
         }
     }
 }
