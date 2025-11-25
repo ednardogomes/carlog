@@ -72,9 +72,6 @@ export class AuthService {
             const existingToken = await this.redisClient.get(payload.sub)
             if (!existingToken) throw new UnauthorizedException('Token não encontrado, faça login novamente')
 
-            console.log(`Token enviado pelo front: ${refreshToken}`);
-            console.log(`Token no Redis: ${existingToken}`);
-
             if (refreshToken !== existingToken) throw new UnauthorizedException('Refresh Token já foi utilizado');
 
             const tokens = await this.getTokens(payload.sub);
