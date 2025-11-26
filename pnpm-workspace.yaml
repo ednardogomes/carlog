@@ -1,0 +1,6 @@
+ignoredBuiltDependencies:
+  - bcrypt
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - msgpackr-extract

@@ -42,7 +42,6 @@ export class VehicleService {
       newVehicleDb.license_plate = createVehicleDto.license_plate;
       newVehicleDb.color = createVehicleDto.color;
       newVehicleDb.model_year = createVehicleDto.model_year;
-      console.log(newVehicleDb.license_plate);
       await this.vehicleRepository.save(newVehicleDb);
       // await this.VehicleQueue.add('process-Vehicle', newVehicleDb);
       return 'Veículo cadastrado com sucesso';
@@ -60,23 +59,20 @@ export class VehicleService {
   }
 
   async getVehicleById(id: string): Promise<Vehicle> {
+    if (!isValidUUID(id)) {
+      throw new BadRequestException('Insira um ID válido');
+    }
+
     const foundVehicle = await this.vehicleRepository.findOne({
       where: { id },
     });
 
-    try {
-      if (!isValidUUID(id)) {
-        throw new BadRequestException('ID tem que ser um UUID');
-      }
 
-      if (!foundVehicle) {
-        throw new NotFoundException('Veículo não encontrado.!');
-      }
-
-      return foundVehicle;
-    } catch (error) {
-      throw new BadRequestException(`Erro inesperado.!${error.message}`);
+    if (!foundVehicle) {
+      throw new NotFoundException('Veículo não encontrado.!');
     }
+
+    return foundVehicle;
   }
 
   async updateVehicle(
@@ -118,25 +114,22 @@ export class VehicleService {
   }
 
   async deleteVehicle(id: string): Promise<string> {
+    if (!isValidUUID(id)) {
+      throw new BadRequestException('Insira um ID válido');
+    }
+
     const foundVehicle = await this.vehicleRepository.findOne({
       where: { id },
     });
-
-    if (!isValidUUID(id)) {
-      throw new BadRequestException('ID tem que ser um UUID');
-    }
 
     if (!foundVehicle) {
       throw new NotFoundException('Veículo não encontrado.!');
     }
 
-    try {
-      const result = await this.vehicleRepository.delete(id);
-      if (result.affected === 0)
-        throw new NotFoundException('Vehicle not found');
-      return 'Veículo deletado com sucesso';
-    } catch (error) {
-      throw new BadRequestException(`Erro inesperado.!${error.message}`);
-    }
+    const result = await this.vehicleRepository.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException('Vehicle not found');
+    return 'Veículo deletado com sucesso';
+
   }
 }

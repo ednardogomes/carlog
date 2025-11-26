@@ -1,16 +1,18 @@
-import { Module } from '@nestjs/common';
-import { RedisModule as ExternalRedisModule } from '@nestjs-modules/ioredis';
+import { Module, Global } from '@nestjs/common';
+import { RedisModule as NestRedisModule } from '@nestjs-modules/ioredis';
 
+@Global()
 @Module({
     imports: [
-        ExternalRedisModule.forRootAsync({
+        NestRedisModule.forRootAsync({
             useFactory: () => {
                 return {
                     type: 'single',
-                    url: process.env.REDIS_CONNECTION_STRING
-                }
-            }
-        })
+                    url: process.env.REDIS_CONNECTION_STRING,
+                };
+            },
+        }),
     ],
+    exports: [NestRedisModule],
 })
 export class RedisModule { }
