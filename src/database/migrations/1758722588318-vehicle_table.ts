@@ -12,7 +12,7 @@ export class VehicleTable1758722588318 implements MigrationInterface {
                 color varchar(20) NULL,
                 model_year varchar(8) NULL,
                 created_at timestamptz NOT NULL DEFAULT now(),
-                CONSTRAINT pk_vehicle_id PRIMARY KEY (id)
+                CONSTRAINT pk_vehicle_id PRIMARY KEY (id),
                 CHECK (LENGTH(license_plate) = 7 OR license_plate IS NULL)
             );
         `);
