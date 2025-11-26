@@ -1,4 +1,4 @@
-import { Maintenance } from 'src/maintenances/entities/maintenance.entity';
+import { Maintenance } from '../../maintenances/entities/maintenance.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('vehicles')
