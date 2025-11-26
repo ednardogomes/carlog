@@ -14,8 +14,8 @@ const dataSourceConfig: DataSourceOptions = {
     password: configService.get('POSTGRES_PASSWORD'),
     database: configService.get('POSTGRES_DB'),
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
-    migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    migrations: [__dirname + '/migrations/*{.ts,.js}'],
+    ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
 };
 
 export default new DataSource(dataSourceConfig);
