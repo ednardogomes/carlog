@@ -5,6 +5,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { Redis } from 'ioredis';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { User } from 'src/users/entities/user.entity';
+import { ValidatedUser } from './interfaces/validated-user.interface';
 
 
 @Injectable()
@@ -33,7 +36,7 @@ export class AuthService {
         return { access_token: `Bearer ${access_token}`, refresh_token }
     }
 
-    async validateUser(email: string, pass: string): Promise<any> {
+    async validateUser(email: string, pass: string): Promise<Omit<User, 'email' | 'password'> | null> {
         const user = await this.usersService.findByEmail(email);
         if (!user) {
             return null;
@@ -46,18 +49,6 @@ export class AuthService {
             return result;
         }
         return null;
-    }
-
-    async login(user: any) {
-        const tokens = await this.getTokens(user.id)
-        await this.redisClient.set(
-            user.id,
-            tokens.refresh_token,
-            'EX',
-            30
-        )
-
-        return { tokens, user }
     }
 
     async refresh(refreshToken: string) {
@@ -80,7 +71,7 @@ export class AuthService {
                 payload.sub,
                 tokens.refresh_token,
                 'EX',
-                15
+                86400
             )
 
             return tokens;
@@ -91,5 +82,21 @@ export class AuthService {
             console.error(error)
             throw new UnauthorizedException('Refresh Token expirado ou inválido, faça login novamente');
         }
+    }
+
+    async login(user: ValidatedUser) {
+        const tokens = await this.getTokens(user.id)
+        await this.redisClient.set(
+            user.id,
+            tokens.refresh_token,
+            'EX',
+            86400
+        )
+
+        return { tokens, user }
+    }
+
+    async register(createUserDto: CreateUserDto) {
+        return this.usersService.createUser(createUserDto)
     }
 }
