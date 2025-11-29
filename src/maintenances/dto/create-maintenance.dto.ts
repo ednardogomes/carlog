@@ -28,4 +28,8 @@ export class CreateMaintenanceDTO {
         return value;
     })
     maintenance_date: string;
+
+    @IsString()
+    @IsOptional()
+    description: string;
 }

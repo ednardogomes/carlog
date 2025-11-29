@@ -34,6 +34,9 @@ export class Maintenance {
   @Column()
   maintenance_date: string;
 
+  @Column()
+  description: string;
+
   @ManyToOne(() => Vehicle, vehicle => vehicle.maintenances)
   @JoinColumn({ name: 'vehicle_id' })
   vehicle: Vehicle;
