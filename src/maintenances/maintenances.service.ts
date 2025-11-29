@@ -61,6 +61,7 @@ export class MaintenancesService {
             newMaintenance.cost = createMaintenance.cost;
             newMaintenance.km = createMaintenance.km;
             newMaintenance.maintenance_date = createMaintenance.maintenance_date;
+            newMaintenance.description = createMaintenance.description;
             await this.maintenancesRepository.save(newMaintenance);
             return 'Manutenção criada com sucesso';
         } catch (error) {
